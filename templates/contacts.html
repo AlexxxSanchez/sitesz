@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты</title>
+    <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+
+</head>
+
+<body>
+
+    <div class="navigation-bar">
+        <nav class="navhat" style="justify-content: end;"> 
+            <li><a href="{{ url_for('index') }}">На главную</a></li>
+            {% if current_user.is_authenticated %}
+            <li>
+                <a href="{{ url_for('dashboard') }}" class="user-info">
+                    <span>{{ current_user.username }}</span>
+                    {% if current_user.avatar %}
+                    <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" alt="Аватар">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='avatars/placeholderavatar.png') }}" alt="Плейсхолдер">
+
+                    {% endif %}
+                </a>
+            </li>
+            {% else %}
+            <li><a href="{{url_for('login') }}">Вход</a></li>
+            {% endif %}
+        </nav>
+    </div>
+    <div class="map">
+        <div id="map">
+            <script>
+                var map;
+                DG.then(function () {
+                    map = DG.map('map', {
+                        center: [46.454528, 135.827678],
+                        zoom: 14
+                    });
+
+                    DG.marker([46.454528, 135.827678]).addTo(map).bindPopup('Адрес нашей организации');
+                });
+            </script>
+        </div>
+    </div>
+    <div class="descriptionText">
+        <li>Мы находимся по адресу: пгт. Восток ул. Молодёжная 5</li>
+        <li>Телефон администрации: +7 (994)-012-94-04</li>
+        <li>Почта администрации: sasav953@gmail.com</li>
+    </div>
+</body>
+
+</html>

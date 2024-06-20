@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет</title>
+
+</head>
+
+<body style="padding: 10px;">
+  <a href="{{ url_for('index') }}"><button style="position: absolute;">На главную</button></a>
+  <a href="/logout" class="logout-button"><button style="position: absolute; right: 10px;">Выйти</button></a>
+  <div class="text" style="justify-content: center; padding-left: 0;">
+    <h1>Личный кабинет</h1>
+  </div>
+
+  <div>
+    <div class="avatar-container">
+      {% if current_user.avatar %}
+      <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" alt="Аватар">
+      {% else %}
+      <img src="{{ url_for('static', filename='avatars/placeholderavatar.png') }}" alt="Плейсхолдер">
+      <p>Аватар не загружен</p>
+      {% endif %}
+    </div>
+    <form action="{{ url_for('upload_avatar') }}" method="post" enctype="multipart/form-data" class="upload_avatar">
+      <input type="file" name="avatar" accept="image/*" id="file-input" style="display: none;">
+      <label for="Выбрать аватар" id="file-label">Выбрать аватар</label>
+      <input type="submit" id="file-input2" style="display: none;">
+      <label for="Загрузить аватар" id="file-label2">Загрузить аватар</label>
+      <script>
+        const fileInput = document.getElementById('file-input');
+        const fileLabel = document.getElementById('file-label');
+        const fileInput2 = document.getElementById('file-input2');
+        const fileLabel2 = document.getElementById('file-label2');
+
+        fileLabel.addEventListener('click', function () {
+          fileInput.click();
+        });
+        fileLabel2.addEventListener('click', function () {
+          fileInput2.click();
+        });
+
+        fileInput.addEventListener('change', function () {
+          if (fileInput.files.length > 0) {
+            fileLabel.innerText = 'Файл выбран';
+          } else {
+            fileLabel.innerText = 'Выберите файл';
+          }
+        });
+      </script>
+
+    </form>
+
+    <div class="text" style="justify-content: center; padding-left: 0;">
+      <h1>Добро пожаловать, {{ current_user.username }}</h1>
+    </div>
+
+   
+    <div class="album-con">
+      {% for album in wishlist_albums %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <br><p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+        <a href="{{ album[3] }}"><button>Слушать</button></a><br>
+        <br><form action="{{ url_for('remove_from_wishlist', album_id=album[0]) }}" method="post">
+          <button type="submit">Убрать из желаемого</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+
+    {% if current_user.is_authenticated %}
+    {% if current_user.is_admin %}
+
+    <header class="dash-bar">
+      <nav class="dashhat">
+
+        <a href="#feedback">
+          <li>Обращения</li>
+        </a>
+
+        <a href="#news">
+          <li>Новости</li>
+        </a>
+
+        <a href="#albums">
+          <li>Альбомы</li>
+        </a>
+
+      </nav>
+
+    </header>
+
+    <p><a href="{{ url_for('add_new') }}" style="color: red;">Добавить новость</a></p><br>
+    <p><a href="{{ url_for('add_album') }}" style="color: red;">Добавить альбом</a></p>
+
+
+    <br>
+    <p id="feedback">Обращения:</p><br>
+    {% for feedback in feedback %}
+    <div class="album-container">
+      <p>Имя: {{ feedback[1] }}</p>
+      <p>Email: {{ feedback[2] }}</p>
+      <p>Сообщение: {{ feedback[3] }}</p><br>
+      {% if current_user.is_authenticated and current_user.is_admin %}
+      <form action="{{ url_for('delete_feedback', feedback_id=feedback[0]) }}" method="post">
+        <button type="submit" class="delete-link">Удалить обращение</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <br>
+    <p id="news">Новости:</p><br>
+    <ul>
+      {% for new in news %}
+      <li class="album-container">
+        <p class="album-title">{{ new[1] }}</p>
+        <p class="album-artist">{{ new[2] }}</p><br>
+        <form action="{{ url_for('delete_new', new_id=new[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить новость</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <br>
+    <p id="albums">Популярное:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'default' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+       
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <br>
+    <p>Рекомендуемое:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'other0' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <br>
+    <p>Поп:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'other1' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <br>
+    <p>Хип-хоп:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'other2' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+        
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <br>
+    <p>Рэп:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'other3' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+        
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <br>
+    <p>Рок:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'other4' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+   
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <br>
+    <p>Альтернатива:</p><br>
+
+    <div class="album-con">
+      {% for album in albums if album[5] == 'other5' %}
+      <div class="album-container">
+        <img class="album-cover" src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Cover Image">
+        <p>{{ album[1] }}</p><br>
+        <p>{{ album[2] }}</p><br>
+      
+        <form action="{{ url_for('delete_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Удалить альбом</button>
+        </form>
+        <br><form action="{{ url_for('edit_album', album_id=album[0]) }}" method="post">
+          <button type="submit" class="delete-link">Редактировать альбом</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+
+    {% endif %}
+    {% endif %}
+    
+  </div>
+  
+</body>
+
+</html>

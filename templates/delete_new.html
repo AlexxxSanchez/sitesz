@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete New</title>
+</head>
+<body>
+    {% for new in news %}
+    <div class="album-entry">
+        <h3>{{ new.prew }}</h3>
+        <p>{{ new.link }}</p>
+        {% if current_user.is_admin %}
+        <form action="{{ url_for('delete_new', new_id=new.id) }}" method="post">
+            <button type="submit" class="btn btn-danger">Удалить новость</button>
+        </form>
+    {% endif %}
+    </div>
+{% endfor %}
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='pictures/icon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='pictures/icon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+</head>
+
+<body>
+
+    <div class="navigation-bar">
+        <nav class="navhat">
+            <li><a href="{{ url_for('index') }}">На главную</a></li>
+            <li>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="user-info">
+                    <span>{{ current_user.username }}</span>
+                    {% if current_user.avatar %}
+                    <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" alt="Аватар">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='avatars/placeholderavatar.png') }}" alt="Плейсхолдер">
+
+                    {% endif %}
+                </a>
+            </li>
+            {% else %}
+            <li><a href="{{url_for('login') }}">Вход</a></li>
+            {% endif %}
+        </nav>
+    </div>
+
+    <div class="text">
+        <h1>Обратная связь</h1>
+    </div>
+    {% if current_user.is_authenticated %}
+    {% if current_user.is_admin %}
+
+    <div class="Feedbacks">
+        {% for feedback in feedback %}
+        <div class="feedback">
+            <h3>{{ feedback[1] }}</h3>
+            <p><strong>Email:</strong> {{ feedback[2] }}</p>
+            <p><strong>Сообщение:</strong> {{ feedback[3] }}</p>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <form action="{{ url_for('delete_feedback', feedback_id=feedback.id) }}" method="post">
+                <button type="submit" class="delete-link">Удалить сообщение</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+</body>
+
+</html>

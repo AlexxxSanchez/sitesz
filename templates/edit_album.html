@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать альбом</title>
+</head>
+
+<body style="padding: 10px;">
+    <button><a href="{{ url_for('dashboard') }}">Назад</a></button>
+
+    <div class="text">
+        <h1>Редактировать альбом</h1>
+    </div>
+
+    <div class="form-album-poz">
+        <div class="form-album">
+            <form method="POST" enctype="multipart/form-data">
+                <h2 for="title">Новое название альбома:</h2>
+                <input type="text" id="title" name="title" value="{{ album[1] }}" class="form-control">
+            
+                <h2 for="artist">Новое название исполнителя:</h2>
+                <input type="text" id="artist" name="artist" value="{{ album[2] }}" class="form-control">
+            
+                <h2 for="link">Новая ссылка:</h2>
+                <input type="text" id="link" name="link" value="{{ album[3] }}" class="form-control">
+            
+                <h2 for="slider_category">Новая категория:</h2>
+                <select id="slider_category" name="slider_category" class="form-control">
+                    <option value="default" {% if album[5] == 'default' %}selected{% endif %}>Популярное</option>
+                    <option value="other0" {% if album[5] == 'other0' %}selected{% endif %}>Рекомендуемое</option>
+                    <option value="other1" {% if album[5] == 'other1' %}selected{% endif %}>Поп</option>
+                    <option value="other2" {% if album[5] == 'other2' %}selected{% endif %}>Хип-хоп</option>
+                    <option value="other3" {% if album[5] == 'other3' %}selected{% endif %}>Рэп</option>
+                    <option value="other4" {% if album[5] == 'other4' %}selected{% endif %}>Рок</option>
+                    <option value="other5" {% if album[5] == 'other5' %}selected{% endif %}>Альтернатива</option>
+                    <!-- Добавьте больше категорий, если необходимо -->
+                </select>
+            
+                <h2>Выбрать новую картинку альбома:</h2><br>
+                <img src="{{ url_for('static', filename='avatars/' + album[4]) }}" alt="Current Album Image"
+                    style="max-width: 200px;"><br>
+                <input type="file" id="image" name="image"><br>
+            
+                <input type="submit" value="Обновить" style="width: calc(var(--index)*9); height: calc(var(--index)*2);">
+            </form>
+            
+        </div>
+    </div>
+
+</body>
+
+</html>

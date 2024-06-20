@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='scripts/slider.js') }}" defer></script>
+    <title>SanchMusic</title>
+</head>
+
+<body>
+
+    <div style="display: flex; justify-content: center;">
+        <div class="left-column">
+            <div class="left-content">
+                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='avatars/logo.png') }}"
+                        alt="Логотип"></a>
+                <a href="#news">
+                    <li>Новости</li>
+                </a>
+                <a href="#popular">
+                    <li>Популярное</li>
+                </a>
+                <a href="#recomended">
+                    <li>Рекомендуемое</li>
+                </a>
+                <a href="#pop">
+                    <li>Поп</li>
+                </a>
+                <a href="#hip-hop">
+                    <li>Хип-хоп</li>
+                </a>
+                <a href="#rap">
+                    <li>Рэп</li>
+                </a>
+                <a href="#rock">
+                    <li>Рок</li>
+                </a>
+                <a href="#alternative">
+                    <li>Альтернатива</li>
+                </a>
+                <a href="#feedback">
+                    <li>Обратная связь</li>
+                </a>
+                <a href="#donat">
+                    <li>Пожертвовать</li>
+                </a>
+                <a href="#aboutus">
+                    <li>О нас</li>
+                </a>
+            </div>
+        </div>
+
+        <div class="right-column">
+
+            <header class="navigation-bar">
+                <nav class="navhat">
+
+                    <div>
+                        <button id="myButton" onclick="toggleContextMenu(event)">Меню</button>
+                        <div id="contextMenu">
+                            <a href="#news">
+                                <li>Новости</li>
+                            </a>
+                            <a href="#popular">
+                                <li>Популярное</li>
+                            </a>
+                            <a href="#recomended">
+                                <li>Рекомендуемое</li>
+                            </a>
+                            <a href="#pop">
+                                <li>Поп</li>
+                            </a>
+                            <a href="#hip-hop">
+                                <li>Хип-хоп</li>
+                            </a>
+                            <a href="#rap">
+                                <li>Рэп</li>
+                            </a>
+                            <a href="#rock">
+                                <li>Рок</li>
+                            </a>
+                            <a href="#alternative">
+                                <li>Альтернатива</li>
+                            </a>
+                            <a href="#feedback">
+                                <li>Обратная связь</li>
+                            </a>
+                            <a href="#donat">
+                                <li>Пожертвовать</li>
+                            </a>
+                            <a href="#aboutus">
+                                <li>О нас</li>
+                                <script src="{{ url_for('static', filename='scripts/button.js') }}"></script>
+                        </div>
+                    </div>
+
+
+                    {% if current_user.is_authenticated %}
+                    <li>
+                        <a href="{{ url_for('dashboard') }}" class="user-info">
+                            <span>{{ current_user.username }}</span>
+                            {% if current_user.avatar %}
+                            <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" alt="Аватар">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='avatars/placeholderavatar.png') }}"
+                                alt="Плейсхолдер">
+
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% else %}
+                    <li><a href="{{url_for('login') }}">Вход</a></li>
+                    {% endif %}
+                </nav>
+
+            </header>
+
+            <div class="text" id="news">
+                <h1>Новости</h1>
+            </div>
+
+            {% for new in news %}
+            <div class="news-block">
+                <div class="news-content">
+                    <a href="{{ new[2] }}">
+                        <p>{{ new[1] }}</p>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="text" id="popular">
+                <h1>Топ популярных альбомов</h1>
+            </div>
+
+            <div class="itc-slider" id="slider1" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider1-items">
+                        {% for album in albums if album[5] == 'default' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider1"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider1"></button>
+                <ol class="itc-slider-indicators" id="slider1-indicators"></ol>
+            </div>
+
+            <div class="text" id="recomended">
+                <h1>Рекомендуемое</h1>
+            </div>
+
+            <div class="itc-slider" id="slider2" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider2-items">
+                        {% for album in albums if album[5] == 'other0' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider2"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider2"></button>
+                <ol class="itc-slider-indicators" id="slider2-indicators"></ol>
+            </div>
+
+            <div class="text" id="pop">
+                <h1>Поп</h1>
+            </div>
+
+            <div class="itc-slider" id="slider3" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider3-items">
+                        {% for album in albums if album[5] == 'other1' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider3"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider3"></button>
+                <ol class="itc-slider-indicators" id="slider3-indicators"></ol>
+            </div>
+
+            <div class="text" id="hip-hop">
+                <h1>Хип-хоп</h1>
+            </div>
+
+            <div class="itc-slider" id="slider4" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider4-items">
+                        {% for album in albums if album[5] == 'other2' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider4"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider4"></button>
+                <ol class="itc-slider-indicators" id="slider4-indicators"></ol>
+            </div>
+
+            <div class="text" id="rap">
+                <h1>Рэп</h1>
+            </div>
+
+            <div class="itc-slider" id="slider5" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider5-items">
+                        {% for album in albums if album[5] == 'other3' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider5"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider5"></button>
+                <ol class="itc-slider-indicators" id="slider5-indicators"></ol>
+            </div>
+
+            <div class="text" id="rock">
+                <h1>Рок</h1>
+            </div>
+
+            <div class="itc-slider" id="slider6" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider6-items">
+                        {% for album in albums if album[5] == 'other4' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider6"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider6"></button>
+                <ol class="itc-slider-indicators" id="slider6-indicators"></ol>
+            </div>
+
+            <div class="text" id="alternative">
+                <h1>Альтернатива</h1>
+            </div>
+
+            <div class="itc-slider" id="slider7" data-slider="itc-slider" data-loop="true">
+                <div class="itc-slider-wrapper">
+                    <div class="itc-slider-items" id="slider7-items">
+                        {% for album in albums if album[5] == 'other5' %}
+                        <div class="block">
+                            <div class="block-content">
+                                <li><img src="{{ url_for('static', filename='avatars/' + album[4]) }}"
+                                        alt="Album Cover"></li>
+                                <li>
+                                    <h2>{{ album[1] }}</h2>
+                                </li>
+                                <li>
+                                    <h3>{{ album[2] }}</h3>
+                                </li>
+                                <li><a href="{{ album[3] }}"><button>Слушать</button></a></li>
+                                <li>
+                                    <form class="wishlist" action="{{ url_for('add_to_wishlist', album_id=album[0]) }}"
+                                        method="post">
+                                        <button type="submit">❤</button>
+                                    </form>
+                                </li>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Кнопки для перехода к предыдущему и следующему слайду -->
+                <button class="itc-slider-btn itc-slider-btn-prev" data-slider-id="slider7"></button>
+                <button class="itc-slider-btn itc-slider-btn-next" data-slider-id="slider7"></button>
+                <ol class="itc-slider-indicators" id="slider7-indicators"></ol>
+            </div>
+
+            <div class="text" id="feedback">
+                <h1>Обратная связь</h1>
+            </div>
+
+            <div class="form-album-poz">
+                <div class="form-album">
+                    <form action="{{ url_for('index') }}" method="POST" id="form">
+                        {{ form.hidden_tag() }}
+                        <h2>Ваше имя:</h2>{{ form.nickname(class="textarea") }}
+                        <h2>Ваша почта:</h2>{{ form.mail(class="textarea") }}
+                        <h2>Ваше обращение:</h2>{{ form.text(class="txtfeedback") }}
+                        <button type="submit" style="display: flex; float: right; align-items: center;">{{
+                            form.submit(class="form-submit") }}</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="text" id="donat">
+                <h1>Пожертвовать</h1>
+            </div>
+
+            <div class="description">
+                <p>
+                    2200 1512 3810 2664 <br>
+                    +79940129404 <br>
+                    На номер этой карты или номера телефона вы можете совершить перевод на любую сумму. Любое
+                    пожертвование
+                    помогает и продвигает наш проект, а также мотивирует заниматься им дальше!
+                </p>
+            </div>
+
+            <div class="text" id="aboutus">
+                <h1>О нас</h1>
+            </div>
+
+            <div class="description">
+                <p>
+                    Мы подумали, что есть множество людей, которые нуждаются в подборках качественной музыки для
+                    обновления своего плейлиста.
+                    Не редко люди попадают в тупик и не могут найти музыку по своему вкусу. Наш сайт сосредоточен на
+                    том, что
+                    на нём пользователь сможет найти подборки авторов, плейлистов и аудио по его предпочтениям и по
+                    рекомендациям от самого сайта.
+                </p>
+            </div>
+
+            <footer class="footer">
+                <div class="social-media">
+                    <a href="https://vk.com/sanchez102"><img src="{{ url_for('static', filename='avatars/VK.png') }}"
+                            alt="ВК"></a>
+                    <a href="https://t.me/sanchez102"><img src="{{ url_for('static', filename='avatars/tlg.png') }}"
+                            alt="TG"></a>
+                </div>
+                <nav class="footer-info">
+                    <ul>
+                        <li style="color: rgb(100, 100, 100);">«SanchMusic» © 2024</li>
+                        <li><a href="{{ url_for('contacts') }}">Контактная информация</a></li>
+                    </ul>
+                </nav>
+
+
+            </footer>
+
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>

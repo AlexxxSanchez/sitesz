@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='avatars/icon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить альбом</title>
+</head>
+<body style="padding: 10px;">
+    <a href="{{ url_for('dashboard') }}"><button>Назад</button></a> 
+    <div class="text">
+        <h1>Добавить альбом</h1>
+    </div>
+    <div class="form-album-poz">
+        <div class="form-album">
+            <form method="post" enctype="multipart/form-data">
+                <!-- Поля для добавления информации о альбоме -->
+                {{ form.hidden_tag() }}
+
+                <h2>Название альбома:</h2> {{ form.title(class="form-control") }}
+
+                <h2>Исполнитель:</h2> {{ form.artist(class="form-control") }}
+
+                <h2>Ссылка на альбом:</h2> {{ form.link(class="form-control") }}
+
+                <h2>Категория:</h2> {{ form.slider_category(class="form-control") }}
+
+                <h2>Картинка альбома:</h2> {{ form.cover_image(class="form-control-file") }}
+
+                <button style="display: flex; justify-content: center; align-items: center;">{{ form.submit(class="form-submit") }}</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+    

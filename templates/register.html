@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='pictures/icon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='pictures/icon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+</head>
+
+<body style="padding: 10px;">
+    
+    <a href="{{ url_for('login') }}"><button>Назад</button></a> 
+
+    <div class="loginpoz">
+        <div class="login">
+            <form method="post" action="/register" enctype="multipart/form-data">
+                 <h1 style="margin-bottom: 2vh;">Регистрация</h1>
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+                <li><label for="username">Имя пользователя:</label></li>
+                <li><input type="text" id="username" name="username" required></li>
+                <li><label for="password">Пароль:</label></li>
+                <li><input type="password" id="password" name="password" required></li>
+                <li><label for="email">Email:</label></li>
+                <li><input type="email" id="email" name="email" required></li>
+                <button type="submit">Зарегистрироваться</button>
+                <button><a href="/login" class="login-link">Войти</a></button>
+            </form>
+    
+        </div>
+    </div>
+
+</body>
+
+</html>
